@@ -20,5 +20,7 @@
 
 
  ###    其他
- 
+
  1. http://www.cnblogs.com/jikey/p/3613082.html
+ 2. http://www.cnblogs.com/bymax/p/5878113.html
+ 3. http://www.kancloud.cn/jsfront/month/256748
