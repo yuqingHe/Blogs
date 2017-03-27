@@ -147,4 +147,214 @@ css命名的语义化是指：为html标签添加有意义的class，id补充未
 
 Ajax的原理简单来说是在用户和服务器之间加了—个中间层(AJAX引擎)，通过XmlHttpRequest对象来向服务器发异步请求，从服务器获得数据，然后用javascript来操作DOM而更新页面。使用户操作与服务器响应异步化。这其中最关键的一步就是从服务器获得请求数据。
 
-Ajax的过程只涉及JavaScript、XMLHttpRequest和DOM。XMLHttpRequest是ajax的核心机制，它是在IE5中首先引入的，是一种支持异步请求的技术。简单的说，也就是javascript可以及时向服务器提出请求和处理响应，而不阻塞用户。达到无刷新的效果
+Ajax的过程只涉及JavaScript、XMLHttpRequest和DOM。XMLHttpRequest是ajax的核心机制，它是在IE5中首先引入的，是一种支持异步请求的技术。
+简单的说，也就是javascript可以及时向服务器提出请求和处理响应，而不阻塞用户。达到无刷新的效果
+
+### 如何创建块级格式化上下文(block formatting context),BFC有什么用
+创建规则：
+
+1. 根元素
+2. 浮动元素（``float``不是``none``）
+3. 绝对定位元素（``position``取值为``absolute``或``fixed``）
+4. ``display``取值为``inline-block``,``table-cell``, ``table-caption``,``flex``, ``inline-flex``之一的元素
+5. ``overflow``不是``visible``的元素
+
+
+作用：
+
+1. 可以包含浮动元素
+2. 不被浮动元素覆盖
+3. 阻止父子元素的margin折叠
+
+### 如何水平居中一个元素
+- 如果需要居中的元素为**常规流中inline元素**，为父元素设置`text-align: center;`即可实现
+- 如果需要居中的元素为**常规流中block元素**，1）为元素设置宽度，2）设置左右margin为auto。3）IE6下需在父元素上设置`text-align: center;`,再给子元素恢复需要的值
+
+```
+<body>
+    <div class="content">
+    aaaaaa aaaaaa a a a a a a a a
+    </div>
+</body>
+
+<style>
+    body {
+        background: #DDD;
+        text-align: center; /* 3 */
+    }
+    .content {
+        width: 500px;      /* 1 */
+        text-align: left;  /* 3 */
+        margin: 0 auto;    /* 2 */
+
+        background: purple;
+    }
+</style>
+```
+
+- 如果需要居中的元素为**浮动元素**，1）为元素设置宽度，2）`position: relative;`，3）浮动方向偏移量（left或者right）设置为50%，4）浮动方向上的margin设置为元素宽度一半乘以-1
+
+```
+<body>
+    <div class="content">
+    aaaaaa aaaaaa a a a a a a a a
+    </div>
+</body>
+
+<style>
+    body {
+        background: #DDD;
+    }
+    .content {
+        width: 500px;         /* 1 */
+        float: left;
+
+        position: relative;   /* 2 */
+        left: 50%;            /* 3 */
+        margin-left: -250px;  /* 4 */
+
+        background-color: purple;
+    }
+</style>
+```
+
+- 如果需要居中的元素为**绝对定位元素**，1）为元素设置宽度，2）偏移量设置为50%，3）偏移方向外边距设置为元素宽度一半乘以-1
+
+```
+<body>
+    <div class="content">
+    aaaaaa aaaaaa a a a a a a a a
+    </div>
+</body>
+
+<style>
+    body {
+        background: #DDD;
+        position: relative;
+    }
+    .content {
+        width: 800px;
+
+        position: absolute;
+        left: 50%;
+        margin-left: -400px;
+
+        background-color: purple;
+    }
+</style>
+```
+
+- 如果需要居中的元素为**绝对定位元素**，1）为元素设置宽度，2）设置左右偏移量都为0,3）设置左右外边距都为auto
+
+```
+<body>
+    <div class="content">
+    aaaaaa aaaaaa a a a a a a a a
+    </div>
+</body>
+
+<style>
+    body {
+        background: #DDD;
+        position: relative;
+    }
+    .content {
+        width: 800px;
+
+        position: absolute;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+
+        background-color: purple;
+    }
+</style>
+```
+
+### 如何竖直居中一个元素
+参考资料：[6 Methods For Vertical Centering With CSS](http://www.vanseodesign.com/css/vertical-centering/)。 [盘点8种CSS实现垂直居中](http://blog.csdn.net/freshlover/article/details/11579669)
+
+- 需要居中元素为**单行文本**，为包含文本的元素设置大于`font-size`的`line-height`：
+
+```
+<p class="text">center text</p>
+
+<style>
+.text {
+    line-height: 200px;
+}
+</style>
+```
+
+#### 如何解决跨域问题
+同源：两个文档同源需满足
+
+1. 协议相同
+2. 域名相同
+3. 端口相同
+
+>JSONP：
+
+原理是：动态插入`script`标签，通过`script`标签引入一个`js`文件，这个js文件载入成功后会执行我们在url参数中指定的函数，并且会把我们需要的`json`数据作为参数传入。
+
+
+
+由于同源策略的限制，`XmlHttpRequest`只允许请求当前源（域名、协议、端口）的资源，为了实现跨域请求，可以通过`script`标签实现跨域请求，然后在服务端输出JSON数据并执行回调函数，从而解决了跨域的数据请求。
+
+
+
+优点是兼容性好，简单易用，支持浏览器与服务器双向通信。缺点是只支持GET请求。
+
+`JSONP`：`json+padding`（内填充），顾名思义，就是把JSON填充到一个盒子里
+
+```js
+<script>
+    function createJs(sUrl){
+
+        var oScript = document.createElement('script');
+        oScript.type = 'text/javascript';
+        oScript.src = sUrl;
+        document.getElementsByTagName('head')[0].appendChild(oScript);
+    }
+
+    createJs('jsonp.js');
+
+    box({
+       'name': 'test'
+    });
+
+    function box(json){
+        alert(json.name);
+    }
+</script>
+```
+
+
+>CORS
+
+服务器端对于`CORS`的支持，主要就是通过设置`Access-Control-Allow-Origin`来进行的。如果浏览器检测到相应的设置，就可以允许`Ajax`进行跨域的访问。
+
+
+
+>通过修改document.domain来跨子域
+
+将子域和主域的`document.domain`设为同一个主域.前提条件：这两个域名必须属于同一个基础域名!而且所用的协议，端口都要一致，否则无法利用`document.domain`进行跨域
+
+
+
+主域相同的使用`document.domain`
+
+>使用window.name来进行跨域
+
+
+
+`window`对象有个`name`属性，该属性有个特征：即在一个窗口(window)的生命周期内,窗口载入的所有的页面都是共享一个`window.name`的，每个页面对`window.name`都有读写的权限，`window.name`是持久存在一个窗口载入过的所有页面中的
+
+
+
+
+>使用HTML5中新引进的`window.postMessage`方法来跨域传送数据
+
+
+
+还有flash、在服务器上设置代理页面等跨域方式。个人认为`window.name`的方法既不复杂，也能兼容到几乎所有浏览器，这真是极好的一种跨域方法。
